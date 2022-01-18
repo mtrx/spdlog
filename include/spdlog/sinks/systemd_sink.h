@@ -48,8 +48,12 @@ protected:
     void sink_it_(const details::log_msg &msg) override
     {
         int err;
+        string_view_t payload;
+        memory_buf_t formatted;
+        base_sink<Mutex>::formatter_->format(msg, formatted);
+        payload = string_view_t(formatted.data(), formatted.size());
 
-        size_t length = msg.payload.size();
+        size_t length = payload.size();
         // limit to max int
         if (length > static_cast<size_t>(std::numeric_limits<int>::max()))
         {
